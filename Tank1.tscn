@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Camera.gd" type="Script" id=1]
+[ext_resource path="res://TestDino.gd" type="Script" id=2]
+[ext_resource path="res://Dino.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Sprites/Test-Food.png" type="Texture" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -738.881
+margin_right = 270.119
+margin_bottom = 1117.0
+rect_pivot_offset = Vector2( 321.622, 222.906 )
+mouse_filter = 2
+color = Color( 0.737255, 0.819608, 0.513726, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+margin_left = 268.0
+margin_top = -1.0
+margin_right = 1297.0
+margin_bottom = 1116.0
+rect_pivot_offset = Vector2( 321.622, 222.906 )
+mouse_filter = 2
+color = Color( 0.67451, 0.827451, 0.92549, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2( 270, 560 )
+current = true
+script = ExtResource( 1 )
+
+[node name="TestDino" type="KinematicBody2D" parent="."]
+position = Vector2( 270, 560 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestDino"]
+shape = SubResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="TestDino"]
+margin_left = -19.3494
+margin_top = -19.3494
+margin_right = 20.6506
+margin_bottom = 20.6506
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Dino" parent="." instance=ExtResource( 3 )]
+position = Vector2( 430.142, 934.446 )
+
+[node name="Food Zone 1" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Food Zone 1"]
+position = Vector2( 161.038, 684.413 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 4 )
