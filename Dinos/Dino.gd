@@ -15,6 +15,8 @@ const SPRITE_FRAME = {
 	State.SLEEPY: 0,
 	State.ASLEEP: 2,
 }
+
+export var food_type = "Veg"
 export var move_speed = 100
 const BOUNCE_OFFSET = -12
 const BOUNCE_DURATION = 0.2
@@ -73,7 +75,9 @@ func idle():
 func hungry() -> Vector2:
 	#Pick a random food zone to travel to
 	if target_zone == null:
-		var food_zones = get_tree().get_nodes_in_group("Food Zone")
+		var food_zones = get_tree().get_nodes_in_group(food_type)
+		if not food_zones:
+			return Vector2(0, 0)
 		var rand_food_zone = food_zones[randi()%food_zones.size()]
 		if rand_food_zone.is_occupied():
 			return Vector2(0, 0)

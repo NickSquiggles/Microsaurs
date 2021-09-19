@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Stego.png-8ba6234a1f92b19e49919b183ea67377.stex"
+path="res://.import/resurrect-64-1x.png-38fab55e35695e848d781d220efb2ae6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Stego.png"
-dest_files=[ "res://.import/Stego.png-8ba6234a1f92b19e49919b183ea67377.stex" ]
+source_file="res://Assets/resurrect-64-1x.png"
+dest_files=[ "res://.import/resurrect-64-1x.png-38fab55e35695e848d781d220efb2ae6.stex" ]
 
 [params]
 
