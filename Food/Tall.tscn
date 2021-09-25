@@ -9,11 +9,11 @@
 texture = ExtResource( 1 )
 
 [node name="Zone 1" parent="." index="1" groups=[
-"Tall",
+"TALL",
 ]]
 position = Vector2( -150, 110 )
 
 [node name="Zone 2" parent="." index="2" groups=[
-"Tall",
+"TALL",
 ]]
 position = Vector2( 150, 110 )

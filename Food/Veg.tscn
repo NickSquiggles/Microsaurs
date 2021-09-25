@@ -5,9 +5,9 @@
 [node name="Food" instance=ExtResource( 2 )]
 
 [node name="Zone 1" parent="." index="1" groups=[
-"Veg",
+"VEG",
 ]]
 
 [node name="Zone 2" parent="." index="2" groups=[
-"Veg",
+"VEG",
 ]]

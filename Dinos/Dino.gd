@@ -16,12 +16,28 @@ const SPRITE_FRAME = {
 	State.ASLEEP: 2,
 }
 
-export var food_type = "Veg"
+enum FoodType{
+	VEG,
+	MEAT,
+	TALL,
+}
+
+export(FoodType) var food_type = FoodType.VEG
 export var move_speed = 100
 const BOUNCE_OFFSET = -12
 const BOUNCE_DURATION = 0.2
 onready var tween := $Tween
 onready var sprite := $Sprite
+onready var reaction := $Reactions
+onready var thoughtbubble := get_node("Reactions/ThoughtBubble")
+
+onready var THOUGHT_FRAME = {
+	State.IDLE: 0,
+	State.HUNGRY: 2 if food_type == FoodType.MEAT else 1,
+	State.EATING: 0,
+	State.SLEEPY: 3,
+	State.ASLEEP: 0,
+}
 
 onready var debug_state_label = $DebugLabel
 
@@ -38,6 +54,7 @@ func _ready():
 	randomize()
 	print("Hunger = ", hunger)
 	print("Energy = ", energy)
+	print(THOUGHT_FRAME)
 
 func _process(delta):
 	debug_state_label.text = "State: " + State.keys()[current_state]
@@ -49,6 +66,9 @@ func _process(delta):
 	elif current_state == State.EATING:
 		direction = eating()
 	sprite.frame = SPRITE_FRAME[current_state]
+	thoughtbubble.frame = THOUGHT_FRAME[current_state]
+	thoughtbubble.visible = thoughtbubble.frame != 0
+	reaction.global_position.x = sprite.get_node("Position2D").global_position.x
 	dino_move(delta, direction)
 
 func _on_Timer_timeout():
@@ -61,6 +81,7 @@ func _on_Timer_timeout():
 	print("Energy = ", energy)
 
 func idle():
+	emit_particles(null)
 	if hunger <= 0:
 		current_state = State.HUNGRY
 		
@@ -73,9 +94,10 @@ func idle():
 		return Vector2(0, 0)
 
 func hungry() -> Vector2:
+	thoughtbubble.visible = true
 	#Pick a random food zone to travel to
 	if target_zone == null:
-		var food_zones = get_tree().get_nodes_in_group(food_type)
+		var food_zones = get_tree().get_nodes_in_group(FoodType.keys()[food_type])
 		if not food_zones:
 			return Vector2(0, 0)
 		var rand_food_zone = food_zones[randi()%food_zones.size()]
@@ -90,9 +112,9 @@ func hungry() -> Vector2:
 	if vec_to_food.length() < 10:
 		var food_bowl = target_zone.get_parent()
 		if food_bowl.position.x - position.x > 0:
-			sprite.set_flip_h(true)
+			sprite.scale.x = -8
 		else:
-			sprite.set_flip_h(false)
+			sprite.scale.x = 8
 
 		current_state = State.EATING
 		return Vector2(0, 0)
@@ -101,6 +123,7 @@ func hungry() -> Vector2:
 	return direction
 	
 func eating():
+	emit_particles("Heart")
 	if hunger >= hunger_max:
 		print("HE DO BE FULL")
 		current_state = State.IDLE
@@ -112,9 +135,11 @@ func eating():
 func dino_move(delta, direction: Vector2):
 	#Move + flip sprite to face travel dirction
 	if direction.x > 0:
-		sprite.set_flip_h(true)
+		sprite.scale.x = -8
+		#sprite.set_flip_h(true)
 	elif direction.x < 0:
-		sprite.set_flip_h(false)
+		sprite.scale.x = 8
+		#sprite.set_flip_h(false)
 	position += direction * move_speed * delta
 	
 	#Bounce animation
@@ -133,3 +158,11 @@ func dino_move(delta, direction: Vector2):
 			BOUNCE_DURATION / 2.0
 		)
 		tween.start()
+		
+func emit_particles(effect):
+	for n in reaction.get_children():
+		if n is Particles2D:
+			if n.name == effect:
+				n.emitting = true
+			else:
+				n.emitting = false

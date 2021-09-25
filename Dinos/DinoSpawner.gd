@@ -1,6 +1,7 @@
 extends MenuButton
 
 var dino_scenes = [
+	preload("res://Dinos/Dino.tscn"),
 	preload("res://Dinos/Stego.tscn"),
 	preload("res://Dinos/Tric.tscn"),
 	preload("res://Dinos/Trex.tscn"),

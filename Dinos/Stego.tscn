@@ -8,4 +8,10 @@
 [node name="Sprite" parent="." index="1"]
 texture = ExtResource( 2 )
 
+[node name="Position2D" parent="Sprite" index="0"]
+position = Vector2( -8.34731, -4.33663 )
+
 [node name="Node" type="Node" parent="." index="4"]
+
+[node name="ThoughtBubble" parent="." index="5"]
+position = Vector2( -48.3744, -116.103 )
