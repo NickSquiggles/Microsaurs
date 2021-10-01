@@ -6,11 +6,14 @@
 [node name="Dino" instance=ExtResource( 2 )]
 food_type = 2
 
-[node name="Sprite" parent="." index="1"]
+[node name="Reactions" parent="." index="1"]
+position = Vector2( -64.7462, -171.611 )
+
+[node name="ThoughtBubble" parent="Reactions" index="0"]
+position = Vector2( 17.1349, -86.214 )
+
+[node name="Sprite" parent="." index="2"]
 texture = ExtResource( 1 )
 
 [node name="Position2D" parent="Sprite" index="0"]
 position = Vector2( -8.0487, -20.7222 )
-
-[node name="ThoughtBubble" parent="." index="4"]
-position = Vector2( -40.5867, -243.52 )

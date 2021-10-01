@@ -5,11 +5,11 @@
 
 [node name="Dino" instance=ExtResource( 2 )]
 
-[node name="Sprite" parent="." index="1"]
+[node name="Reactions" parent="." index="1"]
+position = Vector2( -58.7462, -69.6109 )
+
+[node name="Sprite" parent="." index="2"]
 texture = ExtResource( 1 )
 
 [node name="Position2D" parent="Sprite" index="0"]
 position = Vector2( -7.62754, -8.95411 )
-
-[node name="ThoughtBubble" parent="." index="4"]
-position = Vector2( -28.316, -155.995 )

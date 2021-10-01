@@ -1,15 +1,18 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Food/Veg.png" type="Texture" id=1]
 [ext_resource path="res://ActivityZone.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Food/Food.gd" type="Script" id=3]
 
 [node name="Food" type="Node2D"]
 position = Vector2( 270.66, 600.675 )
+script = ExtResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 4, 4 )
 texture = ExtResource( 1 )
-hframes = 3
+hframes = 5
+frame = 4
 
 [node name="Zone 1" parent="." instance=ExtResource( 2 )]
 position = Vector2( -100, 10 )

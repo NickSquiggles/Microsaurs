@@ -47,6 +47,7 @@ var hunger_max = 10
 var energy = 10
 export var energy_speed = 1
 var current_state = State.IDLE
+var target_node = null
 var target_zone = null
 
 # Called when the node enters the scene tree for the first time.
@@ -101,17 +102,17 @@ func hungry() -> Vector2:
 		if not food_zones:
 			return Vector2(0, 0)
 		var rand_food_zone = food_zones[randi()%food_zones.size()]
-		if rand_food_zone.is_occupied():
+		if not rand_food_zone.is_available():
 			return Vector2(0, 0)
 		target_zone = rand_food_zone
-		target_zone.set_occupied(true)
+		target_zone.set_available(false)
 	var food_pos: Vector2 = target_zone.global_position
 	var vec_to_food := food_pos - position
 	
 	#Flip sprite to face food bowl
 	if vec_to_food.length() < 10:
-		var food_bowl = target_zone.get_parent()
-		if food_bowl.position.x - position.x > 0:
+		target_node = target_zone.get_parent()
+		if target_node.position.x - position.x > 0:
 			sprite.scale.x = -8
 		else:
 			sprite.scale.x = 8
@@ -127,8 +128,9 @@ func eating():
 	if hunger >= hunger_max:
 		print("HE DO BE FULL")
 		current_state = State.IDLE
-		target_zone.set_occupied(false)
+		target_zone.set_available(true)
 		target_zone = null
+	target_node.eat()
 	return Vector2(0, 0)
 	
 	

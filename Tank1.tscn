@@ -41,15 +41,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Food" parent="." instance=ExtResource( 4 )]
+
+[node name="Food2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 270.66, 840.675 )
+
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 270, 560 )
 current = true
 script = ExtResource( 1 )
-
-[node name="Food" parent="." instance=ExtResource( 4 )]
-
-[node name="Food2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 277.787, 866.163 )
 
 [node name="YSort Dinos" type="YSort" parent="."]
 
