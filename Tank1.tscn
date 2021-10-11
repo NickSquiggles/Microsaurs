@@ -63,5 +63,3 @@ script = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[connection signal="pressed" from="MenuButton" to="YSort Dinos" method="_on_MenuButton_pressed"]
