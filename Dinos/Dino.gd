@@ -53,9 +53,7 @@ var target_zone = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-	print("Hunger = ", hunger)
-	print("Energy = ", energy)
-	print(THOUGHT_FRAME)
+	debug_print_state()
 
 func _process(delta):
 	debug_state_label.text = "State: " + State.keys()[current_state]
@@ -72,14 +70,16 @@ func _process(delta):
 	reaction.global_position.x = sprite.get_node("Position2D").global_position.x
 	dino_move(delta, direction)
 
+func debug_print_state() -> void:
+	print("%17s" % [name], " | Hunger: ", hunger, ", Energy: ", energy)
+
 func _on_Timer_timeout():
 	if current_state == State.EATING:
 		hunger = min(hunger + hunger_max / 2, hunger_max)
 	else:
 		hunger = max(hunger - hunger_speed, 0)
 	energy -= energy_speed
-	print("Hunger = ", hunger)
-	print("Energy = ", energy)
+	debug_print_state()
 
 func idle():
 	emit_particles(null)
