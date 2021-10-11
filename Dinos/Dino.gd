@@ -1,5 +1,8 @@
 extends Node2D
 
+# emitted with two parameters; the previous state and the new state
+signal state_changed
+
 enum State{
 	IDLE,
 	HUNGRY,
@@ -53,22 +56,44 @@ var target_zone = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
+	if connect("state_changed", self, "_on_state_changed"):
+		push_error("failed to connect state changed signal")
 	debug_print_state()
 
 func _process(delta):
-	debug_state_label.text = "State: " + State.keys()[current_state]
 	var direction = Vector2(0, 0)
-	if current_state == State.IDLE:
-		direction = idle()
-	if current_state == State.HUNGRY:
-		direction = hungry()
-	elif current_state == State.EATING:
-		direction = eating()
+	
+	match current_state:
+		State.IDLE: direction = idle()
+		State.HUNGRY: direction = hungry()
+		State.EATING: direction = eating()
+	
 	sprite.frame = SPRITE_FRAME[current_state]
+	
 	thoughtbubble.frame = THOUGHT_FRAME[current_state]
 	thoughtbubble.visible = thoughtbubble.frame != 0
+	
 	reaction.global_position.x = sprite.get_node("Position2D").global_position.x
+	
 	dino_move(delta, direction)
+
+func state_name(state: int) -> String:
+	return State.keys()[state]
+
+func change_state(new_state: int) -> void:
+	# do nothing if we're trying to change to a state we're already in.
+	if new_state == current_state:
+		return
+	
+	emit_signal("state_changed", current_state, new_state)
+	current_state = new_state
+
+func _on_state_changed(old_state: int, new_state: int) -> void:
+	print(name, " changing state from ", state_name(old_state), " to ", state_name(new_state))
+	debug_state_label.text = "State: " + state_name(new_state)
+	
+	if new_state == State.EATING:
+		target_node.eat()
 
 func debug_print_state() -> void:
 	print("%17s" % [name], " | Hunger: ", hunger, ", Energy: ", energy)
@@ -81,11 +106,12 @@ func _on_Timer_timeout():
 	energy -= energy_speed
 	debug_print_state()
 
-func idle():
+func idle() -> Vector2:
 	emit_particles(null)
 	if hunger <= 0:
-		current_state = State.HUNGRY
-		
+		change_state(State.HUNGRY)
+		return Vector2(0, 0)
+	
 	var target_pos := Vector2(250, 250)
 	var vec_to_target := target_pos - position
 	if vec_to_target.length() > 80:
@@ -117,20 +143,20 @@ func hungry() -> Vector2:
 		else:
 			sprite.scale.x = 8
 
-		current_state = State.EATING
+		change_state(State.EATING)
 		return Vector2(0, 0)
 	
 	var direction := vec_to_food.normalized()
 	return direction
 	
-func eating():
+func eating() -> Vector2:
 	emit_particles("Heart")
 	if hunger >= hunger_max:
 		print("HE DO BE FULL")
-		current_state = State.IDLE
 		target_zone.set_available(true)
 		target_zone = null
-	target_node.eat()
+		change_state(State.IDLE)
+	
 	return Vector2(0, 0)
 	
 	
