@@ -1,6 +1,6 @@
 extends Position2D
 
-var available := true
+var occupied := false
 
 #func set_occupied(value: bool):
 #	occupied = value
@@ -12,12 +12,12 @@ var available := true
 #func is_occupied() -> bool:
 #	return occupied
 	
-func set_available(value: bool):
-	available = value
-	if not available:
-		$DebugLabel.text = "Not available"
+func set_occupied(value: bool):
+	occupied = value
+	if occupied:
+		$DebugLabel.text = "Occupied"
 	else:
-		$DebugLabel.text = "Available"
+		$DebugLabel.text = "Vacant"
 
-func is_available() -> bool:
-	return available
+func is_occupied() -> bool:
+	return occupied

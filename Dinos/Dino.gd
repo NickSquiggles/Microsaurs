@@ -85,6 +85,7 @@ func change_state(new_state: int) -> void:
 	if new_state == current_state:
 		return
 	
+	# Trigger the '_on_state_Changed' function
 	emit_signal("state_changed", current_state, new_state)
 	current_state = new_state
 
@@ -92,7 +93,14 @@ func _on_state_changed(old_state: int, new_state: int) -> void:
 	print(name, " changing state from ", state_name(old_state), " to ", state_name(new_state))
 	debug_state_label.text = "State: " + state_name(new_state)
 	
+	if new_state == State.IDLE:
+		emit_particles(null)
+	
+	if new_state == State.HUNGRY:
+		thoughtbubble.visible = true
+	
 	if new_state == State.EATING:
+		emit_particles("Heart")
 		target_node.eat()
 
 func debug_print_state() -> void:
@@ -107,7 +115,6 @@ func _on_Timer_timeout():
 	debug_print_state()
 
 func idle() -> Vector2:
-	emit_particles(null)
 	if hunger <= 0:
 		change_state(State.HUNGRY)
 		return Vector2(0, 0)
@@ -121,17 +128,16 @@ func idle() -> Vector2:
 		return Vector2(0, 0)
 
 func hungry() -> Vector2:
-	thoughtbubble.visible = true
 	#Pick a random food zone to travel to
 	if target_zone == null:
 		var food_zones = get_tree().get_nodes_in_group(FoodType.keys()[food_type])
 		if not food_zones:
 			return Vector2(0, 0)
 		var rand_food_zone = food_zones[randi()%food_zones.size()]
-		if not rand_food_zone.is_available():
+		if rand_food_zone.is_occupied() or rand_food_zone.get_parent().serving_amount == 0:
 			return Vector2(0, 0)
 		target_zone = rand_food_zone
-		target_zone.set_available(false)
+		target_zone.set_occupied(true)
 	var food_pos: Vector2 = target_zone.global_position
 	var vec_to_food := food_pos - position
 	
@@ -142,18 +148,18 @@ func hungry() -> Vector2:
 			sprite.scale.x = -8
 		else:
 			sprite.scale.x = 8
-
-		change_state(State.EATING)
+	
+		if target_node.serving_amount > 0:
+			change_state(State.EATING)
 		return Vector2(0, 0)
 	
 	var direction := vec_to_food.normalized()
 	return direction
 	
 func eating() -> Vector2:
-	emit_particles("Heart")
 	if hunger >= hunger_max:
 		print("HE DO BE FULL")
-		target_zone.set_available(true)
+		target_zone.set_occupied(false)
 		target_zone = null
 		change_state(State.IDLE)
 	

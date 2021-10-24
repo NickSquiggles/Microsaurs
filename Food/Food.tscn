@@ -11,8 +11,8 @@ script = ExtResource( 3 )
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 4, 4 )
 texture = ExtResource( 1 )
-hframes = 5
-frame = 4
+hframes = 6
+frame = 5
 
 [node name="Zone 1" parent="." instance=ExtResource( 2 )]
 position = Vector2( -100, 10 )
