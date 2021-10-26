@@ -44,14 +44,16 @@ onready var THOUGHT_FRAME = {
 
 onready var debug_state_label = $DebugLabel
 
-var hunger = 1
+var hunger = 10
 export var hunger_speed = 1
 var hunger_max = 10
-var energy = 10
+var energy = 1
 export var energy_speed = 1
+var energy_max = 10
 var current_state = State.IDLE
 var target_node = null
 var target_zone = null
+var bed_offset = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -67,6 +69,8 @@ func _process(delta):
 		State.IDLE: direction = idle()
 		State.HUNGRY: direction = hungry()
 		State.EATING: direction = eating()
+		State.SLEEPY: direction = sleepy()
+		State.ASLEEP: direction = asleep()
 	
 	sprite.frame = SPRITE_FRAME[current_state]
 	
@@ -96,12 +100,15 @@ func _on_state_changed(old_state: int, new_state: int) -> void:
 	if new_state == State.IDLE:
 		emit_particles(null)
 	
-	if new_state == State.HUNGRY:
-		thoughtbubble.visible = true
-	
 	if new_state == State.EATING:
 		emit_particles("Heart")
 		target_node.eat()
+		
+	if new_state == State.SLEEPY:
+		bed_offset = rand_vector() * 15
+	
+	if new_state == State.ASLEEP:
+		emit_particles("Z")
 
 func debug_print_state() -> void:
 	print("%17s" % [name], " | Hunger: ", hunger, ", Energy: ", energy)
@@ -111,12 +118,20 @@ func _on_Timer_timeout():
 		hunger = min(hunger + hunger_max / 2, hunger_max)
 	else:
 		hunger = max(hunger - hunger_speed, 0)
-	energy -= energy_speed
+		
+	if current_state == State.ASLEEP:
+		energy = min(energy + energy_max / 2, energy_max)
+	else:
+		energy = max(energy - energy_speed, 0)
 	debug_print_state()
 
 func idle() -> Vector2:
 	if hunger <= 0:
 		change_state(State.HUNGRY)
+		return Vector2(0, 0)
+		
+	if energy <= 0:
+		change_state(State.SLEEPY)
 		return Vector2(0, 0)
 	
 	var target_pos := Vector2(250, 250)
@@ -164,8 +179,52 @@ func eating() -> Vector2:
 		change_state(State.IDLE)
 	
 	return Vector2(0, 0)
+
+func sleepy() -> Vector2:
+	#Pick a random sleep zone to travel to
+	if target_zone == null:
+		var sleep_zones = get_tree().get_nodes_in_group("BED")
+		if not sleep_zones:
+			return Vector2(0, 0)
+		var rand_sleep_zone = sleep_zones[randi()%sleep_zones.size()]
+		if rand_sleep_zone.is_occupied():
+			return Vector2(0, 0)
+		target_zone = rand_sleep_zone
+		target_zone.set_occupied(true)
+	var bed_pos: Vector2 = target_zone.global_position + bed_offset
+	var vec_to_bed := bed_pos - position
 	
+	#Flip sprite to face food bowl
+	if vec_to_bed.length() < 5:
+		target_node = target_zone.get_parent()
+		if target_node.position.x - position.x > 0:
+			sprite.scale.x = -8
+		else:
+			sprite.scale.x = 8
+		
+		change_state(State.ASLEEP)
+
+		return Vector2(0, 0)
 	
+	var direction := vec_to_bed.normalized()
+	return direction
+	
+func asleep() -> Vector2:
+	if energy >= energy_max:
+		print("HE DO BE RESTED")
+		target_zone.set_occupied(false)
+		target_zone = null
+		change_state(State.IDLE)
+	
+	return Vector2(0, 0)
+	
+func rand_vector() -> Vector2:
+  var vec = Vector2(
+	rand_range(-1, 1),
+	rand_range(-1, 1)
+  )
+  return vec.normalized()
+
 func dino_move(delta, direction: Vector2):
 	#Move + flip sprite to face travel dirction
 	if direction.x > 0:

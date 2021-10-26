@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Camera.gd" type="Script" id=1]
 [ext_resource path="res://Food/Meat.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Beds/Bed.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Food/Veg.tscn" type="PackedScene" id=4]
 [ext_resource path="res://UI/DebugFont.tres" type="DynamicFont" id=5]
+[ext_resource path="res://Beds/BedLarge.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Dinos/DinoSpawner.gd" type="Script" id=7]
 
 [node name="Node2D" type="Node2D"]
@@ -45,6 +47,12 @@ __meta__ = {
 
 [node name="Food2" parent="." instance=ExtResource( 2 )]
 position = Vector2( 270.66, 840.675 )
+
+[node name="Bed" parent="." instance=ExtResource( 3 )]
+position = Vector2( 126.455, 452.721 )
+
+[node name="Bed2" parent="." instance=ExtResource( 6 )]
+position = Vector2( 394.539, 487.039 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 270, 560 )
