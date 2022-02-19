@@ -53,10 +53,10 @@ onready var debug_state_label = $DebugLabel
 var hunger = 10
 export var hunger_speed = 1
 var hunger_max = 10
-var energy = 10
+var energy = 1
 export var energy_speed = 1
 var energy_max = 10
-var happiness = 1
+var happiness = 10
 export var happiness_speed = 1
 var happiness_max = 10
 var current_state = State.IDLE
@@ -293,8 +293,8 @@ func bored() -> Vector2:
 func playing() -> Vector2:
 	target_node.play()
 	match target_node.play_type:
-		target_node.PlayType.NONE: bouncing = true
-		target_node.PlayType.BOUNCE: pass
+		target_node.PlayType.NONE: pass
+		target_node.PlayType.BOUNCE: bouncing = true
 	
 	if happiness >= happiness_max:
 		print("HE DO BE PLAYING")

@@ -7,6 +7,14 @@ const BOUNCE_OFFSET = -30
 const BOUNCE_DURATION = 0.8
 var bouncing = false
 
+enum ToyType{
+	NONE,
+	BOUNCE,
+	PARTICLES,
+}
+
+export(ToyType) var toy_type = ToyType.NONE
+
 enum PlayType{
 	NONE,
 	BOUNCE,
@@ -15,14 +23,17 @@ enum PlayType{
 export(PlayType) var play_type = PlayType.NONE
 
 func play():
-	match play_type:
-		PlayType.NONE: particles.emitting = true
-		PlayType.BOUNCE: bouncing = true
+	match toy_type:
+		ToyType.NONE: pass
+		ToyType.BOUNCE: bouncing = true
+		ToyType.PARTICLES: particles.emitting = true
+		
 
 func stop():
-	match play_type:
-		PlayType.NONE: particles.emitting = false
-		PlayType.BOUNCE: bouncing = false
+	match toy_type:
+		ToyType.NONE: pass
+		ToyType.BOUNCE: bouncing = false
+		ToyType.PARTICLES: particles.emitting = false
 	
 func _process(delta):	
 	if bouncing == true and not tween.is_active():

@@ -2,22 +2,16 @@
 
 [ext_resource path="res://ActivityZone.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Beds/Bed.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Beds/Large-Pillow.png" type="Texture" id=3]
+[ext_resource path="res://Beds/Large-Turqouise.png" type="Texture" id=3]
 
 [node name="Bed" instance=ExtResource( 2 )]
 
 [node name="Sprite" parent="." index="0"]
+scale = Vector2( 8, 8 )
 texture = ExtResource( 3 )
 
 [node name="Zone 1" parent="." index="1"]
-position = Vector2( 0, 40 )
+position = Vector2( -100, 15 )
 
-[node name="Zone 2" parent="." index="2" groups=[
-"BED",
-] instance=ExtResource( 1 )]
-position = Vector2( -60, -30 )
-
-[node name="Zone 3" parent="." index="3" groups=[
-"BED",
-] instance=ExtResource( 1 )]
-position = Vector2( 66.01, -30 )
+[node name="Zone 2" parent="." index="2" groups=["BED"] instance=ExtResource( 1 )]
+position = Vector2( 113, 19 )
